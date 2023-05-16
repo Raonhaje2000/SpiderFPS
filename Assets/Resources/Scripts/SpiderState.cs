@@ -11,35 +11,35 @@ public class SpiderState : MonoBehaviour
 
     Animator animator;
 
-    bool isChaseDelay = true;            // Ãß°İ µô·¹ÀÌÀÎÁö È®ÀÎÇÏ´Â ÇÃ·¡±×
+    bool isChaseDelay = true;            // ì¶”ê²© ë”œë ˆì´ì¸ì§€ í™•ì¸í•˜ëŠ” í”Œë˜ê·¸
 
-    float chaseDelay;                    // Ãß°İ µô·¹ÀÌ (Ãß°İ ´ë±â ½Ã°£)
+    float chaseDelay;                    // ì¶”ê²© ë”œë ˆì´ (ì¶”ê²© ëŒ€ê¸° ì‹œê°„)
 
-    bool isDamageAnimationDelay = false; // ÇÇ°İ ¾Ö´Ï¸ŞÀÌ¼Ç µô·¹ÀÌ ÇÃ·¡±×
+    bool isDamageAnimationDelay = false; // í”¼ê²© ì• ë‹ˆë©”ì´ì…˜ ë”œë ˆì´ í”Œë˜ê·¸
 
-    float attackDistance;                // ¸ó½ºÅÍ °ø°İ °Å¸® (Ãß°İ Á¦ÇÑ °Å¸®¿Í µ¿ÀÏ)
+    float attackDistance;                // ëª¬ìŠ¤í„° ê³µê²© ê±°ë¦¬ (ì¶”ê²© ì œí•œ ê±°ë¦¬ì™€ ë™ì¼)
 
-    bool isAttackDelay;                  // ¸ó½ºÅÍ °ø°İ µô·¹ÀÌÀÎÁö Ã¼Å©ÇÏ´Â ÇÃ·¡±×
+    bool isAttackDelay;                  // ëª¬ìŠ¤í„° ê³µê²© ë”œë ˆì´ì¸ì§€ ì²´í¬í•˜ëŠ” í”Œë˜ê·¸
 
-    public float enemyMaxHp;             // ¸ó½ºÅÍÀÇ ÃÖ´ë Ã¼·Â
-    public float enemyCurrentHp;         // ¸ó½ºÅÍÀÇ ÇöÀç Ã¼·Â
+    public float enemyMaxHp;             // ëª¬ìŠ¤í„°ì˜ ìµœëŒ€ ì²´ë ¥
+    public float enemyCurrentHp;         // ëª¬ìŠ¤í„°ì˜ í˜„ì¬ ì²´ë ¥
 
-    bool isDead = false;                 // ¸ó½ºÅÍ°¡ Á×¾ú´ÂÁö È®ÀÎÇÏ´Â ÇÃ·¡±×
+    bool isDead = false;                 // ëª¬ìŠ¤í„°ê°€ ì£½ì—ˆëŠ”ì§€ í™•ì¸í•˜ëŠ” í”Œë˜ê·¸
 
     public enum State
     {
-        IDLE = 0, // ±âº»
-        WALK,     // °È±â (ÇÃ·¹ÀÌ¾î Ãß°İ)
-        ATTACK,   // °ø°İ
-        DAMAGE,   // ÇÇ°İ
-        DEAD      // Á×À½
+        IDLE = 0, // ê¸°ë³¸
+        WALK,     // ê±·ê¸° (í”Œë ˆì´ì–´ ì¶”ê²©)
+        ATTACK,   // ê³µê²©
+        DAMAGE,   // í”¼ê²©
+        DEAD      // ì£½ìŒ
     };
 
-    public State enemyState = State.IDLE; // ¸ó½ºÅÍ »óÅÂ
+    public State enemyState = State.IDLE; // ëª¬ìŠ¤í„° ìƒíƒœ
 
     void Start()
     {
-        // °ü·Ã Á¤º¸ ·Îµå ¹× ÃÊ±âÈ­
+        // ê´€ë ¨ ì •ë³´ ë¡œë“œ ë° ì´ˆê¸°í™”
         spider = this.transform;
         player = EnemyManager.instance.player;
 
@@ -58,7 +58,7 @@ public class SpiderState : MonoBehaviour
 
         isDead = false;
 
-        // ¾Ö´Ï¸ŞÀÌÅÍ ¸Å°³º¯¼ö ÃÊ±âÈ­
+        // ì• ë‹ˆë©”ì´í„° ë§¤ê°œë³€ìˆ˜ ì´ˆê¸°í™”
         animator.SetBool("isWalk", false);
         animator.SetBool("isDamaged", false);
         animator.SetBool("isAttack", false);
@@ -71,15 +71,15 @@ public class SpiderState : MonoBehaviour
         {
             case State.IDLE:
                 {
-                    // Ãß°İ µô·¹ÀÌ°¡ ¾Æ´Ò ¶§ WALK·Î »óÅÂ ÀüÀÌ
+                    // ì¶”ê²© ë”œë ˆì´ê°€ ì•„ë‹ ë•Œ WALKë¡œ ìƒíƒœ ì „ì´
                     if (isChaseDelay)
                     {
-                        // Ãß°İ µô·¹ÀÌ Àû¿ë
+                        // ì¶”ê²© ë”œë ˆì´ ì ìš©
                         StartCoroutine(WaitChaseDelay());
                     }
                     else
                     {
-                        // x, y, zÃà À§Ä¡ °íÁ¤
+                        // x, y, zì¶• ìœ„ì¹˜ ê³ ì •
                         rbody.constraints = RigidbodyConstraints.FreezeAll;
 
                         animator.SetBool("isWalk", true);
@@ -89,10 +89,10 @@ public class SpiderState : MonoBehaviour
                 break;
             case State.WALK:
                 {
-                    // ÇÃ·¹ÀÌ¾î Ãß°İ
+                    // í”Œë ˆì´ì–´ ì¶”ê²©
                     this.GetComponent<SpiderAI>().ChaseTarget();
 
-                    // ¸ó½ºÅÍ¿Í ÇÃ·¹ÀÌ¾î »çÀÌÀÇ °Å¸®°¡ ¸ó½ºÅÍÀÇ °ø°İ °Å¸®ÀÎ °æ¿ì ATTACKÀ¸·Î »óÅÂ ÀüÀÌ
+                    // ëª¬ìŠ¤í„°ì™€ í”Œë ˆì´ì–´ ì‚¬ì´ì˜ ê±°ë¦¬ê°€ ëª¬ìŠ¤í„°ì˜ ê³µê²© ê±°ë¦¬ì¸ ê²½ìš° ATTACKìœ¼ë¡œ ìƒíƒœ ì „ì´
                     if (Vector3.Distance(spider.position, player.position) <= attackDistance)
                     {
                         animator.SetBool("isWalk", false);
@@ -103,10 +103,10 @@ public class SpiderState : MonoBehaviour
                 break;
             case State.ATTACK:
                 {
-                    // ÇÃ·¹ÀÌ¾î Ãß°İ ÁßÁö
+                    // í”Œë ˆì´ì–´ ì¶”ê²© ì¤‘ì§€
                     this.GetComponent<SpiderAI>().ChaseStop();
 
-                    // ¸ó½ºÅÍ¿Í ÇÃ·¹ÀÌ¾î »çÀÌÀÇ °Å¸®°¡ ¸ó½ºÅÍÀÇ °ø°İ °Å¸®¸¦ ¹ş¾î³­ °æ¿ì IDLE·Î »óÅÂ ÀüÀÌ
+                    // ëª¬ìŠ¤í„°ì™€ í”Œë ˆì´ì–´ ì‚¬ì´ì˜ ê±°ë¦¬ê°€ ëª¬ìŠ¤í„°ì˜ ê³µê²© ê±°ë¦¬ë¥¼ ë²—ì–´ë‚œ ê²½ìš° IDLEë¡œ ìƒíƒœ ì „ì´
                     if (Vector3.Distance(spider.position, player.position) > attackDistance)
                     {
                         animator.SetBool("isAttack", false);
@@ -116,29 +116,29 @@ public class SpiderState : MonoBehaviour
                 break;
             case State.DAMAGE:
                 {
-                    // ÇÃ·¹ÀÌ¾î Ãß°İ ÁßÁö
+                    // í”Œë ˆì´ì–´ ì¶”ê²© ì¤‘ì§€
                     this.GetComponent<SpiderAI>().ChaseStop();
 
-                    // ¸ó½ºÅÍ ÇÇ°İ ¾Ö´Ï¸ŞÀÌ¼Ç Á¶Àı
+                    // ëª¬ìŠ¤í„° í”¼ê²© ì• ë‹ˆë©”ì´ì…˜ ì¡°ì ˆ
                     StartCoroutine(WaitDamageAnimationDelay());
                 }
                 break;
             case State.DEAD:
                 {
-                    // ¸ó½ºÅÍ°¡ ¾ÆÁ÷ ¾È Á×¾úÀ» °æ¿ì (ÇÑ¹ø¸¸ Ã³¸®µÇµµ·Ï)
+                    // ëª¬ìŠ¤í„°ê°€ ì•„ì§ ì•ˆ ì£½ì—ˆì„ ê²½ìš° (í•œë²ˆë§Œ ì²˜ë¦¬ë˜ë„ë¡)
                     if (!isDead)
                     {
-                        //Debug.Log("¸ó½ºÅÍ Ã³Ä¡");
+                        //Debug.Log("ëª¬ìŠ¤í„° ì²˜ì¹˜");
 
-                        // ÇÃ·¹ÀÌ¾î Ãß°İ ÁßÁö
+                        // í”Œë ˆì´ì–´ ì¶”ê²© ì¤‘ì§€
                         this.GetComponent<SpiderAI>().ChaseStop();
 
                         isDead = true;
 
-                        // ÇÃ·¹ÀÌ¾î°¡ ¸ó½ºÅÍ¸¦ Á×ÀÓ, ÇöÀç ¸ó½ºÅÍ »ı¼º ¼ö °¨¼Ò
+                        // í”Œë ˆì´ì–´ê°€ ëª¬ìŠ¤í„°ë¥¼ ì£½ì„, í˜„ì¬ ëª¬ìŠ¤í„° ìƒì„± ìˆ˜ ê°ì†Œ
                         EnemyManager.instance.KillEnemy();
 
-                        // ¾Ö´Ï¸ŞÀÌ¼ÇÀÌ ³¡³­ ÈÄ ¸ó½ºÅÍ Á¦°Å
+                        // ì• ë‹ˆë©”ì´ì…˜ì´ ëë‚œ í›„ ëª¬ìŠ¤í„° ì œê±°
                         Destroy(spider.gameObject, animator.GetCurrentAnimatorStateInfo(0).length - 0.8f);
                     }
                 }
@@ -146,7 +146,7 @@ public class SpiderState : MonoBehaviour
         }
     }
 
-    // Ãß°İ µô·¹ÀÌ Àû¿ë
+    // ì¶”ê²© ë”œë ˆì´ ì ìš©
     IEnumerator WaitChaseDelay()
     {
         if (isChaseDelay)
@@ -157,30 +157,29 @@ public class SpiderState : MonoBehaviour
         }
     }
 
-    // Ãæµ¹ Ã³¸®
+    // ì¶©ëŒ ì²˜ë¦¬
     private void OnTriggerEnter(Collider other)
     {
-        // ¸ó½ºÅÍ »óÅÂ°¡ ATTACKÀÌ°í, Ãæµ¹ÇÑ ¿ÀºêÁ§Æ®°¡ ÇÃ·¹ÀÌ¾îÀÎ °æ¿ì
+        // ëª¬ìŠ¤í„° ìƒíƒœê°€ ATTACKì´ê³ , ì¶©ëŒí•œ ì˜¤ë¸Œì íŠ¸ê°€ í”Œë ˆì´ì–´ì¸ ê²½ìš°
         if(enemyState == State.ATTACK && other.gameObject.tag == "Player")
         {
-            // ¸ó½ºÅÍ °ø°İ µô·¹ÀÌ°¡ ¾Æ´Ñ °æ¿ì
+            // ëª¬ìŠ¤í„° ê³µê²© ë”œë ˆì´ê°€ ì•„ë‹Œ ê²½ìš°
             if (!isAttackDelay)
             {
                 isAttackDelay = true;
 
-                //Debug.Log("ÇÃ·¹ÀÌ¾î °ø°İ");
+                //Debug.Log("í”Œë ˆì´ì–´ ê³µê²©");
 
-                // ÇÃ·¹ÀÌ¾î¿¡°Ô ÇÇÇØ¸¦ ÀÔÈû
+                // í”Œë ˆì´ì–´ì—ê²Œ í”¼í•´ë¥¼ ì…í˜
                 other.GetComponent<PlayerState>().TakeDamagePlayer(EnemyManager.instance.enemyDamage);
 
-                // ¸ó½ºÅÍ °ø°İ µô·¹ÀÌ Àû¿ë
+                // ëª¬ìŠ¤í„° ê³µê²© ë”œë ˆì´ ì ìš©
                 StartCoroutine(WaitAttackDelay());
-            }
-            
+            }            
         }
     }
 
-    // ¸ó½ºÅÍ °ø°İ µô·¹ÀÌ Àû¿ë (Áßº¹ Ã³¸® ¹æÁö)
+    // ëª¬ìŠ¤í„° ê³µê²© ë”œë ˆì´ ì ìš© (ì¤‘ë³µ ì²˜ë¦¬ ë°©ì§€)
     IEnumerator WaitAttackDelay()
     {
         yield return new WaitForSeconds(EnemyManager.instance.enemyAttackDelay);
@@ -188,33 +187,33 @@ public class SpiderState : MonoBehaviour
         isAttackDelay = false;
     }
 
-    // ¸ó½ºÅÍ¿¡°Ô ÇÇÇØ¸¦ ÀÔÈû
+    // ëª¬ìŠ¤í„°ì—ê²Œ í”¼í•´ë¥¼ ì…í˜
     public void TakeDamageSpider(float bulletDamage)
     {
-        // ¸ó½ºÅÍ°¡ ¾ÆÁ÷ ¾È Á×¾úÀ» °æ¿ì DAMAGE·Î »óÅÂ ÀüÀÌ
+        // ëª¬ìŠ¤í„°ê°€ ì•„ì§ ì•ˆ ì£½ì—ˆì„ ê²½ìš° DAMAGEë¡œ ìƒíƒœ ì „ì´
         if (!isDead)
         {
-            // ¸ó½ºÅÍÀÇ ÇöÀç Ã¼·Â °¨¼Ò
+            // ëª¬ìŠ¤í„°ì˜ í˜„ì¬ ì²´ë ¥ ê°ì†Œ
             enemyCurrentHp -= bulletDamage;
 
-            //Debug.Log("¸ó½ºÅÍ Ã¼·Â : " + enemyCurrentHp);
+            //Debug.Log("ëª¬ìŠ¤í„° ì²´ë ¥ : " + enemyCurrentHp);
 
             animator.SetBool("isDamaged", true);
             enemyState = State.DAMAGE;
         }
     }
 
-    // ¸ó½ºÅÍ ÇÇ°İ ¾Ö´Ï¸ŞÀÌ¼Ç Á¶Àı
+    // ëª¬ìŠ¤í„° í”¼ê²© ì• ë‹ˆë©”ì´ì…˜ ì¡°ì ˆ
     IEnumerator WaitDamageAnimationDelay()
     {
-        // ÇÇ°İ ¾Ö´Ï¸ŞÀÌ¼Ç µô·¹ÀÌ°¡ ¾Æ´Ñ °æ¿ì
+        // í”¼ê²© ì• ë‹ˆë©”ì´ì…˜ ë”œë ˆì´ê°€ ì•„ë‹Œ ê²½ìš°
         if (!isDamageAnimationDelay)
         {
             isDamageAnimationDelay = true;
 
             yield return new WaitForSeconds(animator.GetCurrentAnimatorStateInfo(0).length);
 
-            // ¸ó½ºÅÍÀÇ Ã¼·ÂÀÌ ¾ø´Â °æ¿ì DEAD·Î »óÅÂ ÀüÀÌ, Ã¼·ÂÀÌ ³²¾ÆÀÖ´Â °æ¿ì IDLE·Î »óÅÂ ÀüÀÌ
+            // ëª¬ìŠ¤í„°ì˜ ì²´ë ¥ì´ ì—†ëŠ” ê²½ìš° DEADë¡œ ìƒíƒœ ì „ì´, ì²´ë ¥ì´ ë‚¨ì•„ìˆëŠ” ê²½ìš° IDLEë¡œ ìƒíƒœ ì „ì´
             if (enemyCurrentHp <= 0)
             {
                 animator.SetBool("isDead", true);
