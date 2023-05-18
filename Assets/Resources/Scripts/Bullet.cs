@@ -7,64 +7,64 @@ public class Bullet : MonoBehaviour
     Transform tr;
     Rigidbody rbody;
 
-    public float bulletSpeed = 1500;  // ÃÑ¾Ë ¼Óµµ
+    public float bulletSpeed = 1500;  // ì´ì•Œ ì†ë„
 
-    public float bulletDamage = 1.0f; // ÃÑ¾ËÀÌ ÁÖ´Â µ¥¹ÌÁö
+    public float bulletDamage = 1.0f; // ì´ì•Œì´ ì£¼ëŠ” ë°ë¯¸ì§€
 
     void Start()
     {
-        tr = this.transform; // Á÷Á¢ÀûÀÎ ÂüÁ¶Ä³½Ì (ÃÖÀûÈ­ ±â¹ı)
+        tr = this.transform; // ì§ì ‘ì ì¸ ì°¸ì¡°ìºì‹± (ìµœì í™” ê¸°ë²•)
         rbody = GetComponent<Rigidbody>();
 
-        // Àü¹æÀ¸·Î ÈûÀ» °¡ÇÔ
-        rbody.AddForce(tr.forward * bulletSpeed); // ±×¸®°í ¸®Áöµå ¹Ùµğ °ü·Ã
+        // ì „ë°©ìœ¼ë¡œ í˜ì„ ê°€í•¨
+        rbody.AddForce(tr.forward * bulletSpeed);
 
-        // 0.5ÃÊ ÈÄ ÃÑ¾Ë Á¦°Å
+        // 0.5ì´ˆ í›„ ì´ì•Œ ì œê±°
         Destroy(tr.gameObject, 0.5f);
     }
 
     private void OnTriggerEnter(Collider other)
     {
-        if (other.gameObject.tag == "Enemy") // Ãæµ¹ÇÑ ¿ÀºêÁ§Æ®°¡ EnemyÀÎ °æ¿ì ÇØ´ç ¿ÀºêÁ§Æ®¿¡ µ¥¹ÌÁö¸¦ ÁÜ
+        if (other.gameObject.tag == "Enemy") // ì¶©ëŒí•œ ì˜¤ë¸Œì íŠ¸ê°€ Enemyì¸ ê²½ìš° í•´ë‹¹ ì˜¤ë¸Œì íŠ¸ì— ë°ë¯¸ì§€ë¥¼ ì¤Œ
         {
             //Debug.Log("Enemy");
 
-            // ¸ó½ºÅÍ¿¡°Ô ÇÇÇØ¸¦ ÀÔÈû
+            // ëª¬ìŠ¤í„°ì—ê²Œ í”¼í•´ë¥¼ ì…í˜
             other.GetComponent<SpiderState>().TakeDamageSpider(bulletDamage);
 
-            // ¸ó½ºÅÍ ÇÇ ÀÌÆåÆ® º¸¿©ÁÖ±â
+            // ëª¬ìŠ¤í„° í”¼ ì´í™íŠ¸ ë³´ì—¬ì£¼ê¸°
             ShowParticle(ParticleManager.instance.bloodParticle, 0.3f);
         }
-        else if (other.gameObject.tag == "Ground") // Ãæµ¹ÇÑ ¿ÀºêÁ§Æ®°¡ GroundÀÎ °æ¿ì
+        else if (other.gameObject.tag == "Ground") // ì¶©ëŒí•œ ì˜¤ë¸Œì íŠ¸ê°€ Groundì¸ ê²½ìš°
         {
             //Debug.Log("Ground");
 
-            // ÃÑ¾ËÀÌ ¶¥¿¡ ¸Â¾ÒÀ» ¶§ÀÇ ÀÌÆåÆ® º¸¿©ÁÖ±â
+            // ì´ì•Œì´ ë•…ì— ë§ì•˜ì„ ë•Œì˜ ì´í™íŠ¸ ë³´ì—¬ì£¼ê¸°
             ShowParticle(ParticleManager.instance.bulletGroundParticle, 1.0f);
         }
-        else if (other.gameObject.tag == "Tree") // Ãæµ¹ÇÑ ¿ÀºêÁ§Æ®°¡ TreeÀÎ °æ¿ì
+        else if (other.gameObject.tag == "Tree") // ì¶©ëŒí•œ ì˜¤ë¸Œì íŠ¸ê°€ Treeì¸ ê²½ìš°
         {
             //Debug.Log("Tree");
 
-            // ÃÑ¾ËÀÌ ³ª¹«¿¡ ¸Â¾ÒÀ» ¶§ÀÇ ÀÌÆåÆ® º¸¿©ÁÖ±â
+            // ì´ì•Œì´ ë‚˜ë¬´ì— ë§ì•˜ì„ ë•Œì˜ ì´í™íŠ¸ ë³´ì—¬ì£¼ê¸°
             ShowParticle(ParticleManager.instance.bulletWoodParticle, 1.0f);
         }
 
-        // Ãæµ¹ÇÑ ÃÑ¾Ë Á¦°Å
+        // ì¶©ëŒí•œ ì´ì•Œ ì œê±°
         Destroy(tr.gameObject);
     }
 
-    // ÆÄÆ¼Å¬ ÀÌÆåÆ® º¸¿©ÁÖ±â
+    // íŒŒí‹°í´ ì´í™íŠ¸ ë³´ì—¬ì£¼ê¸°
     private void ShowParticle(GameObject particle, float time)
     {
-        // ÆÄÆ¼Å¬ È¸Àü °¢µµ
+        // íŒŒí‹°í´ íšŒì „ ê°ë„
         Vector3 randomRotation = Vector3.one * Random.Range(200, 300);
 
-        // ÆÄÆ¼Å¬ GameObject »ı¼º
+        // íŒŒí‹°í´ GameObject ìƒì„±
         GameObject particleObject = Instantiate(particle, tr.position, tr.rotation);
         particleObject.transform.rotation = Quaternion.Euler(randomRotation);
 
-        // ÀÏÁ¤ ½Ã°£ ÀÌÈÄ ÆÄÆ¼Å¬ Á¦°Å
+        // ì¼ì • ì‹œê°„ ì´í›„ íŒŒí‹°í´ ì œê±°
         Destroy(particleObject.gameObject, time);
     }
 }
