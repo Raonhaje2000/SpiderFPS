@@ -79,7 +79,7 @@ public class SpiderState : MonoBehaviour
                     }
                     else
                     {
-                        // x, y, z축 위치 고정
+                        // x, y, z축 위치와 회전 고정
                         rbody.constraints = RigidbodyConstraints.FreezeAll;
 
                         animator.SetBool("isWalk", true);
